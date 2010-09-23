@@ -11,3 +11,4 @@ Denne koden tilh&oslash;rer en blog-serie p&aring; kjempekjekt.com.
 * [Del 6: Clojure](http://blog.kjempekjekt.com/2010/09/15/ping-ring-del-6-clojure/)
 * [Del 7: Clojure m/Agenter](http://blog.kjempekjekt.com/2010/09/17/ping-ring-del-7-clojure-magenter/)
 * [Del 8: Python](http://blog.kjempekjekt.com/2010/09/20/ping-ring-del-8-python/)
+* [Del 9: Ping Ring Contribs](http://blog.kjempekjekt.com/2010/09/23/ping-ring-contribs/)
