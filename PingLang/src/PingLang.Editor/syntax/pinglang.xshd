@@ -1,0 +1,85 @@
+﻿<?xml version="1.0"?>
+<SyntaxDefinition name="PingLang"
+                  extensions=".ping">
+
+  <Environment>
+    <Default bold="true"
+             italic="false"
+             color="#90E5F7"
+             bgcolor="Black" />
+    
+    <Selection bold="false"
+               italic="false"
+               color="SystemColors.HighlightText"
+               bgcolor="SystemColors.Highlight" />
+
+    <LineNumbers  color="#DDE83A" bgcolor="Black"/>    
+
+  </Environment>
+
+  <Digits name="Digits"
+          bold="true"
+          italic="false"
+          color="#FF2828" />
+
+  <RuleSets>
+    <RuleSet ignorecase="false">
+      
+      <Delimiters>
+        &amp;&lt;&gt;~!@$%^*()-+=|\#/{}[]:;"' , .?
+      </Delimiters>
+
+      <Span name="LineComment"
+            stopateol="true"
+            bold="true"
+            italic="false"
+            color="#CACC63">
+        <Begin>#</Begin>
+      </Span>
+
+      <Span name="LineComment"
+            stopateol="true"
+            bold="false"
+            italic="false"
+            color="#CACC63">
+        <Begin>//</Begin>
+      </Span>
+      
+      <Span name = "STRING" bold = "false" italic = "false" color="#64FD00" stopateol = "true">
+        <Begin bold = "false" italic = "false" color = "#64FD00">"</Begin>
+        <End bold = "false" italic = "false" color = "#64FD00">"</End>
+      </Span>
+
+
+      <KeyWords name = "Punctuation" bold = "false" italic = "false" color="#FF2828">        
+        <Key word = ";" />
+        <Key word = "&lt;" />
+        <Key word = "&gt;" />
+      </KeyWords>
+
+      <KeyWords name = "Keywords" bold="true" italic="false" color="#FD6500">
+        <Key word = "when" />
+        <Key word = "end" />
+      </KeyWords>
+
+      <KeyWords name = "Keywords" bold="true" italic="false" color="#329997">
+        <Key word = "print" />
+        <Key word = "send" />
+        <Key word = "ping" />
+        <Key word = "reset" />
+        <Key word = "wait" />
+        <Key word = "listen" />
+        <Key word = "count" />
+      </KeyWords>
+
+      <KeyWords name = "Keywords" bold="true" italic="false" color="#FFCB00">
+        <Key word = "message" />
+        <Key word = "error" />
+        <Key word = "counter" />
+        <Key word = "pinged" />
+      </KeyWords>
+
+    </RuleSet>
+  </RuleSets>
+
+</SyntaxDefinition>
