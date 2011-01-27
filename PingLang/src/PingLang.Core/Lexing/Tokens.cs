@@ -32,6 +32,7 @@ namespace PingLang.Core.Lexing
         public const int RESET = 22;
         public const int COUNTER = 23;
         public const int GT = 24;
+        public const int STARTING = 25;
 
         public static readonly Dictionary<int, string> TokenNames = new Dictionary<int, string>
         {
@@ -40,7 +41,8 @@ namespace PingLang.Core.Lexing
             {LISTEN, "LISTEN"}, {WHEN, "WHEN"}, {MESSAGE, "MESSAGE"}, {PRINT, "PRINT"},
             {INT, "INT"}, {PING, "PING"}, {PINGED, "PINGED"}, {WAIT, "WAIT"},
             {SEND, "SEND"}, {TO_PORT, "TO_PORT"}, {ERROR, "ERROR"}, {COUNT, "COUNT"},
-            {RESET, "RESET"}, {COUNTER, "COUNTER"}, {GT, "GT"}, {EOF, "EOF"},
+            {RESET, "RESET"}, {COUNTER, "COUNTER"}, {GT, "GT"}, {STARTING, "STARTING"}, 
+            {EOF, "EOF"},
         };
 
         public static readonly List<TokenRecognizer> All = new List<TokenRecognizer>
@@ -54,6 +56,7 @@ namespace PingLang.Core.Lexing
             new TokenRecognizer(MESSAGE, "^message", true), 
             new TokenRecognizer(PRINT, "^print", true), 
             new TokenRecognizer(PINGED, "^pinged", true), 
+            new TokenRecognizer(STARTING, "^starting", true), 
             new TokenRecognizer(PING, "^ping", true), 
             new TokenRecognizer(WAIT, "^wait", true), 
             new TokenRecognizer(SEND, "^send", true), 

@@ -23,6 +23,7 @@ namespace PingLang.Core.Test
                         count every 1 second
                         when counter > 5 ping Foo
                         listen on port 9876
+                        when starting ping Foo
                         when message
                             print ""Received "" message
                             ping SomeOtherPinger
@@ -43,6 +44,7 @@ namespace PingLang.Core.Test
                 Tokens.COUNT, Tokens.INT, Tokens.ID, Tokens.T,
                 Tokens.WHEN, Tokens.COUNTER, Tokens.GT, Tokens.INT, Tokens.PING, Tokens.ID, Tokens.T,
                 Tokens.LISTEN, Tokens.INT, Tokens.T,
+                Tokens.WHEN, Tokens.STARTING, Tokens.PING, Tokens.ID, Tokens.T,
                 Tokens.WHEN, Tokens.MESSAGE, Tokens.T,
                 Tokens.PRINT, Tokens.STRING, Tokens.MESSAGE, Tokens.T,
                 Tokens.PING, Tokens.ID, Tokens.T,
@@ -56,8 +58,9 @@ namespace PingLang.Core.Test
                 Tokens.ACTOR_END);
             ExpectTokens("Pinger", "\r\n", 
                 "count every", "1", "second", "\r\n",
-                "when", "counter", ">", "5", "ping", "Foo", "\r\n", 
+                "when", "counter", ">", "5", "ping", "Foo", "\r\n",
                 "listen on port", "9876", "\r\n",
+                "when", "starting", "ping", "Foo", "\r\n",
                 "when", "message", "\r\n",
                 "print", "\"Received \"", "message", "\r\n",
                 "ping", "SomeOtherPinger", "\r\n",

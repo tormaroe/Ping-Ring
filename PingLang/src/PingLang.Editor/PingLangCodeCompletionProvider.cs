@@ -21,6 +21,7 @@ namespace PingLang.Editor
                 new DefaultCompletionData("when message", "", 6),
                 new DefaultCompletionData("when pinged", "", 2),
                 new DefaultCompletionData("when counter", "", 4),
+                new DefaultCompletionData("when starting", "", 11),
                 new DefaultCompletionData("listen on port", "", 10),
                 new DefaultCompletionData("print", "", 9),
                 new DefaultCompletionData("ping", "", 2),

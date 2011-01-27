@@ -33,6 +33,7 @@ namespace PingLang.Core.Test.Parsing
                     listen on port 9876
                     count every 1 second
                     when error print ""Foo""
+                    when starting ping Foo
                     when pinged 
                         ping FooBar
                         reset counter

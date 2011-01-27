@@ -1,0 +1,8 @@
+
+# TCP Sample part 1 : 
+#   Main sends a message every 2 seconds.
+#   See TcpPart2.ping for receiver ...
+
+Main
+  count every 2 seconds
+  when counter > 1 send "Hello" to port 22220.

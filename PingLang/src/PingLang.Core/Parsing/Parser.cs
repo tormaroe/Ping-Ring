@@ -6,55 +6,13 @@ using PingLang.Core.Lexing;
 
 namespace PingLang.Core.Parsing
 {
-    public class Parser
-    {
-        private readonly Lexer _lexer;
-        private List<Token> _tokens;
-
-        int _tokenIndex;
-        private readonly Lexer _input;
+    public class Parser : BaseParser
+    {        
+        private static string[] _unit_literals 
+            = new [] {"second", "seconds"};
         
-        public Parser(Lexer lexer)
-        {
-            _lexer = lexer;            
-        }
-
-        public void ConstructTree(string source)
-        {
-            _lexer.Tokenize(source);
-            _tokens = _lexer.Tokens.ToList();
-
-            Program();
-        }
-
-        public void Consume()
-        {
-            _tokenIndex++;
-        }
-
-        private void ConsumeLeadingTerminators()
-        {
-            while (LT(1).Type == Tokens.T) Consume();
-        }
-
-        public Token LT(int i)
-        {
-            return _tokens[i + _tokenIndex -1];
-        }
-
-        public void Match(int x)
-        {
-            if (LT(1).Type == x) 
-                Consume();
-            else
-                throw new Exception(String.Format(
-                    "expecting {0}; found {1}", 
-                    Tokens.TokenNames[x], 
-                    LT(1)));
-        }
-
-        private static string[] _unit_literals = new []{"second", "seconds"};
-
+        public Parser(Lexer lexer) : base(lexer) { }
+                                                                             
         private void MatchUnitId()
         {
             if (_unit_literals.Contains(LT(1).Text))
@@ -66,7 +24,7 @@ namespace PingLang.Core.Parsing
         /// <summary>
         /// program : ACTOR_ID* ; // match zero or more actors
         /// </summary>
-        public void Program()
+        protected override void Program()
         {
             do {
                Actor();
@@ -148,6 +106,10 @@ namespace PingLang.Core.Parsing
                     Match(Tokens.COUNTER);
                     Match(Tokens.GT);
                     Match(Tokens.INT);
+                    Event_body();
+                    break;
+                case Tokens.STARTING:
+                    Match(Tokens.STARTING);
                     Event_body();
                     break;
                 default:

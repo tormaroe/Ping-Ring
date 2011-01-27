@@ -1,10 +1,12 @@
 using System;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace PingLang.Editor
 {
     public class EditorController
     {
+        #region Misc
         private const string PingFileFilter = "PingLang Script (*.ping)|*.ping";
         private string _savedSource;
         private string _path;
@@ -50,7 +52,9 @@ namespace PingLang.Editor
                 "Sure?",
                 MessageBoxButtons.YesNo) == DialogResult.No;
         }
+        #endregion
 
+        #region New
         public void NewRequest()
         {
             if (UnsavedChanges && MindUnsavedChanges("Are you sure you want to discard changes and open a new service?"))
@@ -59,7 +63,9 @@ namespace PingLang.Editor
             Path = string.Empty;
             SetSource(string.Empty);
         }
+        #endregion
 
+        #region Open
         public void OpenRequest()
         {
             if (UnsavedChanges && MindUnsavedChanges("Are you sure you want to discard changes and open a new service?"))
@@ -78,7 +84,9 @@ namespace PingLang.Editor
                 }
             }
         }
+        #endregion
 
+        #region Save
         public void SaveRequest()
         {
             if (string.IsNullOrEmpty(Path))
@@ -108,11 +116,22 @@ namespace PingLang.Editor
 
             _savedSource = _view.Source;
         }
+        #endregion
 
+        #region Run
         public void RunRequest()
         {
+            SaveRequest();
 
+            if (!string.IsNullOrEmpty(Path))
+                Process.Start("pinglang.exe", Path);
+            else
+                MessageBox.Show(
+                    "No script to run", 
+                    "Can't do that", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Asterisk);
         }
-
+        #endregion
     }
 }

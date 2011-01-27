@@ -1,0 +1,20 @@
+
+// A simple demonstration of 
+// communication between actors. 
+
+Actor1 
+  when pinged 
+    print "Ping"
+    wait 1 second
+    ping Actor2
+  end.
+
+Actor2 
+  when pinged 
+    print "Pong"
+    wait 2 seconds
+    ping Actor1
+  end.
+	
+# Kick off the loop ..
+Main when starting ping Actor1.

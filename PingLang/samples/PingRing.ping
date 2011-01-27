@@ -1,0 +1,33 @@
+# This script implements the complete Ping Ring program
+
+# This actor listens for incoming messages
+PingReceiver
+  listen on port 9876
+  when message
+    print "Received " message
+    ping PingWatcher
+    ping PingSender
+  end.
+
+# This actor sends a delayed message when requested
+PingSender
+  when pinged
+    wait 1 second
+    send "Ping from 9876" to port 9877
+  end
+  when error print "Unable to ping 9877".
+
+# This actor alerts the user of missing messages
+# and tries to restart the loop
+PingWatcher
+  count every 1 second
+  when pinged reset counter
+  when counter > 5
+    print "*** ALERT, RING BROKEN!"
+    print "No ping in " counter " seconds."
+    ping PingSender
+  end.
+
+# Include line below if this script should
+# be used to start the ping ring ...
+// Main when starting ping PingSender.

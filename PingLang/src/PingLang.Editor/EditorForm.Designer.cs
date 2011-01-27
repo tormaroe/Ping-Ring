@@ -61,6 +61,7 @@
             this.NewButton.Name = "NewButton";
             this.NewButton.Size = new System.Drawing.Size(51, 22);
             this.NewButton.Text = "&New";
+            this.NewButton.ToolTipText = "Ctrl+N";
             this.NewButton.Click += new System.EventHandler(this.NewButton_Click);
             // 
             // OpenButton
@@ -70,6 +71,7 @@
             this.OpenButton.Name = "OpenButton";
             this.OpenButton.Size = new System.Drawing.Size(56, 22);
             this.OpenButton.Text = "&Open";
+            this.OpenButton.ToolTipText = "Ctrl+O";
             this.OpenButton.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // SaveButton
@@ -79,6 +81,7 @@
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(51, 22);
             this.SaveButton.Text = "&Save";
+            this.SaveButton.ToolTipText = "Ctrl+S";
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // toolStripSeparator1
@@ -93,6 +96,7 @@
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(48, 22);
             this.RunButton.Text = "&Run";
+            this.RunButton.ToolTipText = "F5";
             this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
             // intellisenseImages
@@ -110,6 +114,7 @@
             this.intellisenseImages.Images.SetKeyName(8, "clock_add.png");
             this.intellisenseImages.Images.SetKeyName(9, "comment.png");
             this.intellisenseImages.Images.SetKeyName(10, "server_connect.png");
+            this.intellisenseImages.Images.SetKeyName(11, "control_play_blue.png");
             // 
             // EditorForm
             // 

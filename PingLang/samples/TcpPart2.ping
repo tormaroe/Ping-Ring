@@ -1,0 +1,8 @@
+
+# TCP Sample part 2 :
+#   Main listens to messages and outputs them.
+#   See TcpPart1.ping for sender ...
+
+Main 
+  listen on port 22220
+  when message print "Message received: " message.

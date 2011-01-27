@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
 using ICSharpCode.TextEditor.Gui.CompletionWindow;
+using System.Drawing;
 
 namespace PingLang.Editor
 {
@@ -22,7 +23,12 @@ namespace PingLang.Editor
         private void InitializeEditor()
         {
             HighlightingManager.Manager.AddSyntaxModeFileProvider(new FileSyntaxModeProvider(@"syntax"));
-            _editorControl = new TextEditorControl { Dock = DockStyle.Fill };
+            _editorControl = new TextEditorControl 
+            { 
+                Dock = DockStyle.Fill, 
+                Font = new Font("Consolas", 10.0f), 
+                TabIndent = 2 
+            };
             _editorControl.SetHighlighting("PingLang");
             _editorControl.ActiveTextAreaControl.TextArea.KeyDown += (sender, e) =>
             {
