@@ -58,8 +58,8 @@ namespace PingLang.Core.Lexing
 		new TokenInfo { token = "ID" ,        regex = "^([a-zA-Z])+([\\w\\-])*"},		
 		new TokenInfo { token = "COMMENT" ,   regex = "^[(\\/\\/)#][^\\r\\n]*"}, 		
 		new TokenInfo { token = "INT" ,       regex = "^(\\d)+"},
-		new TokenInfo { token = "STRING" ,    regex = "^\"[^\\r\\n\"]*\""}
-		
+		new TokenInfo { token = "STRING" ,    regex = "^\"[^\\r\\n\"]*\""},
+		new TokenInfo { token = "PROGRAM" }
 	};
 
 	class TokenInfo 

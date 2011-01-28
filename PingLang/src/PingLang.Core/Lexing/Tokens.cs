@@ -37,6 +37,7 @@ namespace PingLang.Core.Lexing
 		public const int COMMENT = 20;
 		public const int INT = 21;
 		public const int STRING = 22;
+		public const int PROGRAM = 23;
 
 
 		public static readonly Dictionary<int, string> TokenNames = new Dictionary<int, string>
@@ -65,6 +66,7 @@ namespace PingLang.Core.Lexing
 			{COMMENT, "COMMENT"},
 			{INT, "INT"},
 			{STRING, "STRING"},
+			{PROGRAM, "PROGRAM"},
         
         };
                 

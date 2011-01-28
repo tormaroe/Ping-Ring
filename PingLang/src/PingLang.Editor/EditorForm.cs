@@ -87,6 +87,7 @@ namespace PingLang.Editor
                     case Keys.N: _controller.NewRequest(); break;
                     case Keys.O: _controller.OpenRequest(); break;
                     case Keys.S: _controller.SaveRequest(); break;
+                    case Keys.R: _controller.RunRequest(); break;
                 }
             }
             else if (e.KeyCode == Keys.F5)

@@ -8,6 +8,7 @@ using PingLang.Core.Lexing;
 
 namespace PingLang.Core.Test.Parsing
 {
+
     [TestFixture]
     public class ParserTest
     {

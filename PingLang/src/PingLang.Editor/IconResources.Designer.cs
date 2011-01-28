@@ -67,6 +67,13 @@ namespace PingLang.Editor {
             }
         }
         
+        internal static System.Drawing.Bitmap chart_organisation {
+            get {
+                object obj = ResourceManager.GetObject("chart_organisation", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap folder {
             get {
                 object obj = ResourceManager.GetObject("folder", resourceCulture);

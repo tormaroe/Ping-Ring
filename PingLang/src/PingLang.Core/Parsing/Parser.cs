@@ -21,16 +21,26 @@ namespace PingLang.Core.Parsing
                 throw new Exception("Unexpected unit literal " + LT(1).Text);
         }
 
+        private AST _currentNode;
+
         /// <summary>
         /// program : ACTOR_ID* ; // match zero or more actors
         /// </summary>
         protected override void Program()
         {
+            AST = new AST(new Token(Tokens.PROGRAM, ""));
+            _currentNode = AST;
             do {
                Actor();
             } while(LT(1).Type != Tokens.EOF);
         }
 
+        private void AddCurrentTokenAndSetAsCurrentNode()
+        {
+            var newNode = new AST(LT(1));
+            _currentNode.Children.Add(newNode);
+            _currentNode = newNode;
+        }
         /// <summary>
         /// ACTOR : T* ID BODY* . ; // ACTOR_ID postfixed ':'
         /// </summary>
@@ -38,12 +48,14 @@ namespace PingLang.Core.Parsing
         {
             ConsumeLeadingTerminators();
 
+            AddCurrentTokenAndSetAsCurrentNode();
             Match(Tokens.ID);
             
             while (LT(1).Type != Tokens.ACTOR_END)
                 Body();
             
             Match(Tokens.ACTOR_END);
+            _currentNode = AST;
         }
 
         /// <summary>
@@ -52,15 +64,19 @@ namespace PingLang.Core.Parsing
         private void Body()
         {
             ConsumeLeadingTerminators();
-
-            switch (LT(1).Type)
+            
+            PreserveCurrentNodeAfterOperation(() =>
             {
-                case Tokens.LISTEN: Listen(); break;
-                case Tokens.COUNT: Count(); break;
-                case Tokens.WHEN: When(); break;
-                default:
-                    throw new Exception("Unexpected actor body " + LT(1));
-            }
+                AddCurrentTokenAndSetAsCurrentNode();
+                switch (LT(1).Type)
+                {
+                    case Tokens.LISTEN: Listen(); break;
+                    case Tokens.COUNT: Count(); break;
+                    case Tokens.WHEN: When(); break;
+                    default:
+                        throw new Exception("Unexpected actor body " + LT(1));
+                }
+            });
         }
 
         /// <summary>
@@ -69,16 +85,19 @@ namespace PingLang.Core.Parsing
         private void Listen()
         {
             Match(Tokens.LISTEN);
+            _currentNode.Children.Add(new AST(LT(1)));
             Match(Tokens.INT);
         }
 
-        /// <summary>
+        /// <summary
         /// COUNT : 'count every' INT 'second' ;
         /// </summary>
         private void Count()
         {
             Match(Tokens.COUNT);
+            _currentNode.Children.Add(new AST(LT(1)));
             Match(Tokens.INT);
+            _currentNode.Children.Add(new AST(LT(1)));
             MatchUnitId();
         }
 
@@ -88,15 +107,18 @@ namespace PingLang.Core.Parsing
         private void When()
         {
             Match(Tokens.WHEN);
+            
+            _currentNode.Children.Add(new AST(LT(1)));
+
             switch (LT(1).Type)
             {
-                case Tokens.ERROR: 
+                case Tokens.ERROR:
                     Match(Tokens.ERROR);
-                    Event_body(); 
+                    Event_body();
                     break;
-                case Tokens.PINGED: 
+                case Tokens.PINGED:                    
                     Match(Tokens.PINGED);
-                    Event_body(); 
+                    Event_body();
                     break;
                 case Tokens.MESSAGE:
                     Match(Tokens.MESSAGE);
@@ -115,6 +137,7 @@ namespace PingLang.Core.Parsing
                 default:
                     throw new Exception("Unexpected event " + LT(1));
             }
+
         }
 
         /// <summary>
@@ -157,16 +180,27 @@ namespace PingLang.Core.Parsing
         /// </summary>
         private void Event_body_Line()
         {
-            switch (LT(1).Type)
+            PreserveCurrentNodeAfterOperation(() =>
             {
-                case Tokens.PRINT: Print(); break;
-                case Tokens.PING: Ping(); break;
-                case Tokens.RESET: Reset(); break;
-                case Tokens.WAIT: Wait(); break;
-                case Tokens.SEND: Send(); break;
-                default:
-                    throw new Exception("Unexpected event body " + LT(1));
-            }
+                AddCurrentTokenAndSetAsCurrentNode();
+                switch (LT(1).Type)
+                {
+                    case Tokens.PRINT: Print(); break;
+                    case Tokens.PING: Ping(); break;
+                    case Tokens.RESET: Reset(); break;
+                    case Tokens.WAIT: Wait(); break;
+                    case Tokens.SEND: Send(); break;
+                    default:
+                        throw new Exception("Unexpected event body " + LT(1));
+                }
+            });            
+        }
+
+        private void PreserveCurrentNodeAfterOperation(Action a)
+        {
+            var tempNode = _currentNode;
+            a.Invoke();
+            _currentNode = tempNode;
         }
 
         /// <summary>
@@ -177,6 +211,7 @@ namespace PingLang.Core.Parsing
             Match(Tokens.PRINT);
             do
             {
+                _currentNode.Children.Add(new AST(LT(1)));
                 switch (LT(1).Type)
                 {
                     case Tokens.STRING:
@@ -200,6 +235,7 @@ namespace PingLang.Core.Parsing
         private void Ping()
         {
             Match(Tokens.PING);
+            _currentNode.Children.Add(new AST(LT(1)));
             Match(Tokens.ID);
         }
 
@@ -224,8 +260,10 @@ namespace PingLang.Core.Parsing
         private void Send()
         {
             Match(Tokens.SEND);
+            _currentNode.Children.Add(new AST(LT(1)));
             Match(Tokens.STRING);
             Match(Tokens.TO_PORT);
+            _currentNode.Children.Add(new AST(LT(1)));
             Match(Tokens.INT);
         }
     }

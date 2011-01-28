@@ -31,12 +31,13 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditorForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.intellisenseImages = new System.Windows.Forms.ImageList(this.components);
             this.NewButton = new System.Windows.Forms.ToolStripButton();
             this.OpenButton = new System.Windows.Forms.ToolStripButton();
             this.SaveButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.RunButton = new System.Windows.Forms.ToolStripButton();
-            this.intellisenseImages = new System.Windows.Forms.ImageList(this.components);
+            this.VisualizeButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,12 +48,35 @@
             this.OpenButton,
             this.SaveButton,
             this.toolStripSeparator1,
+            this.VisualizeButton,
             this.RunButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(533, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // intellisenseImages
+            // 
+            this.intellisenseImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("intellisenseImages.ImageStream")));
+            this.intellisenseImages.TransparentColor = System.Drawing.Color.Transparent;
+            this.intellisenseImages.Images.SetKeyName(0, "brick.png");
+            this.intellisenseImages.Images.SetKeyName(1, "arrow_rotate_clockwise.png");
+            this.intellisenseImages.Images.SetKeyName(2, "bell.png");
+            this.intellisenseImages.Images.SetKeyName(3, "clock_pause.png");
+            this.intellisenseImages.Images.SetKeyName(4, "clock_red.png");
+            this.intellisenseImages.Images.SetKeyName(5, "delete.png");
+            this.intellisenseImages.Images.SetKeyName(6, "email.png");
+            this.intellisenseImages.Images.SetKeyName(7, "email_go.png");
+            this.intellisenseImages.Images.SetKeyName(8, "clock_add.png");
+            this.intellisenseImages.Images.SetKeyName(9, "comment.png");
+            this.intellisenseImages.Images.SetKeyName(10, "server_connect.png");
+            this.intellisenseImages.Images.SetKeyName(11, "control_play_blue.png");
             // 
             // NewButton
             // 
@@ -84,11 +108,6 @@
             this.SaveButton.ToolTipText = "Ctrl+S";
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
             // RunButton
             // 
             this.RunButton.Image = global::PingLang.Editor.IconResources.application_xp_terminal;
@@ -99,22 +118,14 @@
             this.RunButton.ToolTipText = "F5";
             this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
-            // intellisenseImages
+            // VisualizeButton
             // 
-            this.intellisenseImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("intellisenseImages.ImageStream")));
-            this.intellisenseImages.TransparentColor = System.Drawing.Color.Transparent;
-            this.intellisenseImages.Images.SetKeyName(0, "brick.png");
-            this.intellisenseImages.Images.SetKeyName(1, "arrow_rotate_clockwise.png");
-            this.intellisenseImages.Images.SetKeyName(2, "bell.png");
-            this.intellisenseImages.Images.SetKeyName(3, "clock_pause.png");
-            this.intellisenseImages.Images.SetKeyName(4, "clock_red.png");
-            this.intellisenseImages.Images.SetKeyName(5, "delete.png");
-            this.intellisenseImages.Images.SetKeyName(6, "email.png");
-            this.intellisenseImages.Images.SetKeyName(7, "email_go.png");
-            this.intellisenseImages.Images.SetKeyName(8, "clock_add.png");
-            this.intellisenseImages.Images.SetKeyName(9, "comment.png");
-            this.intellisenseImages.Images.SetKeyName(10, "server_connect.png");
-            this.intellisenseImages.Images.SetKeyName(11, "control_play_blue.png");
+            this.VisualizeButton.Image = global::PingLang.Editor.IconResources.chart_organisation;
+            this.VisualizeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.VisualizeButton.Name = "VisualizeButton";
+            this.VisualizeButton.Size = new System.Drawing.Size(72, 22);
+            this.VisualizeButton.Text = "&Visualize";
+            this.VisualizeButton.ToolTipText = " ";
             // 
             // EditorForm
             // 
@@ -143,6 +154,7 @@
         private System.Windows.Forms.ToolStripButton RunButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ImageList intellisenseImages;
+        private System.Windows.Forms.ToolStripButton VisualizeButton;
     }
 }
 

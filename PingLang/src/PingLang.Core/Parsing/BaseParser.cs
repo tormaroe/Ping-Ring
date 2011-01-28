@@ -13,6 +13,7 @@ namespace PingLang.Core.Parsing
 
         int _tokenIndex;
         private readonly Lexer _input;
+        public AST AST {get; protected set;}
 
         public BaseParser(Lexer lexer)
         {
