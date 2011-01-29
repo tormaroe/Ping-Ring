@@ -75,7 +75,7 @@ namespace PingLang.Core.Test.Parsing
                             when message print ""Foo""."
                     );
             },
-            ex => ex.Message.Equals("Unexpected actor body <'ID',\"do\">"));
+            ex => ex.Message.Equals("Unexpected actor body <ID,\"do\">"));
         }
         
         [Test]
@@ -89,7 +89,7 @@ namespace PingLang.Core.Test.Parsing
                             when message print 23 ""Foo"" message foobar."
                     );
             },
-            ex => ex.Message.Equals("Unexpected print argument <'ID',\"foobar\">"));
+            ex => ex.Message.Equals("Unexpected print argument <ID,\"foobar\">"));
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace PingLang.Core.Test.Parsing
                             when earthquake print ""Foo""."
                     );
             },
-            ex => ex.Message.Equals("Unexpected event <'ID',\"earthquake\">"));
+            ex => ex.Message.Equals("Unexpected event <ID,\"earthquake\">"));
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace PingLang.Core.Test.Parsing
                             when message poop ""Foo""."
                         );
                 },
-                ex => ex.Message.Equals("Unexpected event body <'ID',\"poop\">"));
+                ex => ex.Message.Equals("Unexpected event body <ID,\"poop\">"));
         }
     }
 }

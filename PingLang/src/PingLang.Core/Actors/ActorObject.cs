@@ -8,20 +8,22 @@ namespace PingLang.Core.Actors
 {
     public class ActorObject
     {
-        private Queue<Ping> _mailbox = new Queue<Ping>();
+        private Queue<EventState> _mailbox = new Queue<EventState>();
         private readonly string _name;
         private readonly World _world;
 
         internal ActorObject(string name, World world)
         {
             _world = world;
-            _name = name;            
+            _name = name;
+            OnStart = new EventAction<EventState>();
+            OnPing = new EventAction<EventState>();
         }
         
-        public Action<Ping> OnPing { get; set; }
-        public Action OnStart { get; set; }
+        public EventAction<EventState> OnPing { get; private set; }
+        public EventAction<EventState> OnStart { get; private set; }
         
-        internal void Ping(Ping p)
+        internal void Ping(EventState p)
         {
             _mailbox.Enqueue(p);
         }
@@ -33,13 +35,14 @@ namespace PingLang.Core.Actors
                 Console.WriteLine(_name + " starting..");
                 
                 if (OnStart != null)
-                    OnStart.Invoke();
+                    OnStart.Invoke(new EventState { World = _world });
 
                 while (true)
                 {
-                    if (OnPing != null && _mailbox.Count > 0)
-                        OnPing(_mailbox.Dequeue());
-
+                    if (_mailbox.Count > 0)
+                    {
+                        OnPing.Invoke(_mailbox.Dequeue());
+                    }
                     Thread.Sleep(_world.Frequenzy);
                 }
             }).Start();

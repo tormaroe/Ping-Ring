@@ -18,7 +18,7 @@ namespace PingLang.Core.Lexing
 
         public override string ToString()
         {
-            return string.Format("<'{0}',\"{1}\">", 
+            return string.Format("<{0},\"{1}\">", 
                 Tokens.TokenNames[Type], 
                 Text.Replace("\n", "\\n").Replace("\r", "\\r"));
         }

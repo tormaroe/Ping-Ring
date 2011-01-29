@@ -92,7 +92,7 @@ namespace PingLang.Core.Lexing
 			new TokenRecognizer(END, "^end", true),
 			new TokenRecognizer(GT, "^\\>", true),
 			new TokenRecognizer(ID, "^([a-zA-Z])+([\\w\\-])*", true),
-			new TokenRecognizer(COMMENT, "^[(\\/\\/)#][^\\r\\n]*", true),
+			new TokenRecognizer(COMMENT, "^[(\\/\\/)#][^\\r\\n]*", false),
 			new TokenRecognizer(INT, "^(\\d)+", true),
 			new TokenRecognizer(STRING, "^\"[^\\r\\n\"]*\"", true),
 

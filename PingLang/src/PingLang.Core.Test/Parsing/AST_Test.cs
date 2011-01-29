@@ -85,8 +85,9 @@ namespace PingLang.Core.Test.Parsing
             pinger.Children[4].Children[3].Token.Type.ShouldEqual(Tokens.SEND);
             pinger.Children[4].Children[3].Children[0].Token.Type.ShouldEqual(Tokens.STRING);
             pinger.Children[4].Children[3].Children[1].Token.Type.ShouldEqual(Tokens.INT);
-            
 
+            pinger.Children[5].Children[1].Token.Type.ShouldEqual(Tokens.WAIT);
+            pinger.Children[5].Children[1].Children[0].Token.Text.ShouldEqual("1");
         }
     }
 }

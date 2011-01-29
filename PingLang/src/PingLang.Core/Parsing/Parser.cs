@@ -250,7 +250,9 @@ namespace PingLang.Core.Parsing
         private void Wait()
         {
             Match(Tokens.WAIT);
+            _currentNode.Children.Add(new AST(LT(1)));
             Match(Tokens.INT);
+            _currentNode.Children.Add(new AST(LT(1)));
             Match(Tokens.ID);
         }
 

@@ -6,5 +6,8 @@ using System.Threading;
 
 namespace PingLang.Core.Actors
 {
-    public class Ping { }
+    public class EventState 
+    {
+        public World World;
+    }
 }

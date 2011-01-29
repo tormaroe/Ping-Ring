@@ -56,7 +56,7 @@ namespace PingLang.Core.Lexing
 		new TokenInfo { token = "END" ,       regex = "^end"},		
 		new TokenInfo { token = "GT" ,        regex = "^\\>"},		
 		new TokenInfo { token = "ID" ,        regex = "^([a-zA-Z])+([\\w\\-])*"},		
-		new TokenInfo { token = "COMMENT" ,   regex = "^[(\\/\\/)#][^\\r\\n]*"}, 		
+		new TokenInfo { token = "COMMENT" ,   regex = "^[(\\/\\/)#][^\\r\\n]*", dont_include = true }, 		
 		new TokenInfo { token = "INT" ,       regex = "^(\\d)+"},
 		new TokenInfo { token = "STRING" ,    regex = "^\"[^\\r\\n\"]*\""},
 		new TokenInfo { token = "PROGRAM" }

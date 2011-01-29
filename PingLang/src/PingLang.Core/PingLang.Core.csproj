@@ -46,8 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\ActorObject.cs" />
-    <Compile Include="Actors\Ping.cs" />
+    <Compile Include="Actors\EventAction.cs" />
+    <Compile Include="Actors\EventState.cs" />
+    <Compile Include="Actors\TreePrinter.cs" />
     <Compile Include="Actors\World.cs" />
+    <Compile Include="Actors\WorldBuilder.cs" />
     <Compile Include="Lexing\Lexer.cs" />
     <Compile Include="Lexing\Token.cs" />
     <Compile Include="Lexing\TokenRecognizer.cs" />

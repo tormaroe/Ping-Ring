@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using PingLang.Core.Parsing;
 
 namespace PingLang.Core.Actors
 {
@@ -31,7 +32,7 @@ namespace PingLang.Core.Actors
 
         public void Ping(string actorName)
         {
-            _actors[actorName].Ping(new Ping());
+            _actors[actorName].Ping(new EventState { World = this });
         }
     }
 }
