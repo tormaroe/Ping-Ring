@@ -48,29 +48,30 @@ namespace PingLang.Editor
 
         private string SaveDotFileInTempFolder(string dotSource)
         {
-            var tempFile = GetTempFileWithExtension("dot");
-            File.WriteAllText(tempFile, dotSource);
-            return tempFile;
+            return DoWithTempFile("dot", temp => File.WriteAllText(temp, dotSource));
         }
 
         private string GenerateImage(string dotFile)
         {
-            var tempFile = GetTempFileWithExtension("png");
-            using (var imageGeneratorProcess = Process.Start(new ProcessStartInfo
+            return DoWithTempFile("png", temp =>
             {
-                FileName = "dot",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                Arguments = string.Format("-Tpng \"{0}\"", dotFile),
-            }))
-            using (var reader = imageGeneratorProcess.StandardOutput)
-                File.WriteAllText(tempFile, reader.ReadToEnd(), reader.CurrentEncoding);
-            return tempFile;
+                using (var imageGeneratorProcess = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "dot",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    Arguments = string.Format("-Tpng \"{0}\"", dotFile),
+                }))
+                using (var reader = imageGeneratorProcess.StandardOutput)
+                    File.WriteAllText(temp, reader.ReadToEnd(), reader.CurrentEncoding);
+            });
         }
 
-        private string GetTempFileWithExtension(string ext)
+        private string DoWithTempFile(string ext, Action<string> block)
         {
-            return Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + "." + ext);            
+            var fileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + "." + ext);
+            block.Invoke(fileName);
+            return fileName;
         }
     }
 }

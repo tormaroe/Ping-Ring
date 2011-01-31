@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using PingLang.Core.Parsing;
 using System.Text;
+using PingLang.Core.Lexing;
 
 namespace PingLang.Editor
 {
@@ -27,8 +28,18 @@ namespace PingLang.Editor
 
         private void RewriteTree(AST node)
         {
-            node.Token.Text = string.Format("\"{0}: {1}\"", _id.Next(), node.Token.Text.Replace('"', '\''));
+            node.Token.Text = GetDisplayText(node);
             node.Children.ForEach(c => RewriteTree(c));
+        }
+
+        private string GetDisplayText(AST node)
+        {
+            string tokenName = Tokens.TokenNames[node.Token.Type];
+            string tokenText = node.Token.Text.Replace('"', '\'');
+            if (string.IsNullOrEmpty(tokenText) || tokenName.Equals(tokenText.ToUpper()))
+                return string.Format("\"{0}: {1}\"", _id.Next(), tokenName);
+            else 
+                return string.Format("\"{0}: {1} ({2})\"", _id.Next(), tokenName, tokenText);
         }
 
         private void AddNode(AST node)
