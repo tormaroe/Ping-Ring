@@ -14,7 +14,7 @@ namespace PingLang.Core.Lexing
             Type = type;
         }
         public int Type { get; private set; }
-        public string Text { get; private set; }
+        public string Text { get; set; }
 
         public override string ToString()
         {
