@@ -24,6 +24,7 @@ namespace PingLang.Core.Actors
             {
                 case Tokens.PROGRAM: Program(node); break;
                 case Tokens.WHEN: When(node); break;
+                case Tokens.COUNT: Count(node); break;
                 default:
                     break;
             }
@@ -40,6 +41,13 @@ namespace PingLang.Core.Actors
             _currentActor = _world.CreateActor(node.Token.Text);
             node.Children.ForEach(n => Build(n));
             Console.WriteLine("");
+        }
+
+        private void Count(AST node)
+        {
+            int countInMilliseconds = Int32.Parse(node.Children[0].Token.Text) * Unit(node.Children[1].Token.Text);
+
+            _currentActor.CountEvery(countInMilliseconds);
         }
 
         private void When(AST node)
@@ -79,7 +87,9 @@ namespace PingLang.Core.Actors
             switch (line.Token.Type)
             {
                 case Tokens.PRINT:
-                    return state => Console.WriteLine(line.Children[0].Token.Text);
+                    var text = line.Children[0].Token.Text;
+                    text = text.Substring(1, text.Length - 2);
+                    return state => Console.WriteLine(text);
                 case Tokens.PING:
                     return state => state.World.Ping(line.Children[0].Token.Text);
                 case Tokens.WAIT:

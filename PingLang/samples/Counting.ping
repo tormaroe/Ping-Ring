@@ -1,0 +1,6 @@
+
+Main
+  count every 2 seconds
+  when counter > 2
+  	print "foo"
+  end.

@@ -53,7 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeCompletionProvider.cs" />
-    <Compile Include="EditorController.cs" />
+    <Compile Include="EditorCommand.cs" />
+    <Compile Include="PingScript.cs" />
     <Compile Include="EditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,6 +66,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IconResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="New.cs" />
+    <Compile Include="Open.cs" />
     <Compile Include="PingLangCodeCompletionProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,6 +98,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Run.cs" />
+    <Compile Include="Save.cs" />
+    <Compile Include="Visualize.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="icons\application_xp_terminal.png" />
@@ -124,6 +130,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="icons\chart_organisation.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

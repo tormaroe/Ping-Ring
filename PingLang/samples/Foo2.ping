@@ -1,0 +1,12 @@
+
+Foo when starting ping Bar
+	  when pinged
+	  	print "Hello from Foo"
+	  	ping Bar
+	  end.
+
+Bar 
+	when pinged
+		print "Hello from Bar"
+		ping Foo
+	end.

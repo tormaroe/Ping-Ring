@@ -1,0 +1,6 @@
+Foo when starting print "foo".
+Bar 
+	when starting 
+		print "bar"
+		print "foobar 22"
+	end.

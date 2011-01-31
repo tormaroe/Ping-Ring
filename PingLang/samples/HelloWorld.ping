@@ -1,0 +1,8 @@
+
+# The very first PingLang program
+HelloWorld
+	when starting
+		print "Hello, world"
+		wait 5 seconds
+		print "Take care now!"
+	end.

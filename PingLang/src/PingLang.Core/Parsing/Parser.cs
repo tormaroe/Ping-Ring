@@ -107,8 +107,9 @@ namespace PingLang.Core.Parsing
         private void When()
         {
             Match(Tokens.WHEN);
-            
-            _currentNode.Children.Add(new AST(LT(1)));
+
+            var eventSpec = new AST(LT(1));
+            _currentNode.Children.Add(eventSpec);
 
             switch (LT(1).Type)
             {
@@ -126,7 +127,9 @@ namespace PingLang.Core.Parsing
                     break;
                 case Tokens.COUNTER:
                     Match(Tokens.COUNTER);
+                    eventSpec.Children.Add(new AST(LT(1)));
                     Match(Tokens.GT);
+                    eventSpec.Children.Add(new AST(LT(1)));
                     Match(Tokens.INT);
                     Event_body();
                     break;

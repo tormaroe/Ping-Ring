@@ -9,7 +9,7 @@ namespace PingLang.Editor
 {
     public partial class EditorForm : Form
     {
-        private EditorController _controller;
+        private PingScript script;
         private TextEditorControl _editorControl;
         private CodeCompletionWindow _codeCompletionWindow;
                 
@@ -17,7 +17,7 @@ namespace PingLang.Editor
         {
             InitializeEditor();
             InitializeComponent();            
-            _controller = new EditorController(this);
+            script = new PingScript();
         }
 
         private void InitializeEditor()
@@ -48,6 +48,17 @@ namespace PingLang.Editor
             _codeCompletionWindow = CodeCompletionWindow.ShowCompletionWindow(this, _editorControl, "", completeionDataProvider, value);
         }
 
+
+        public string Path
+        {
+            set
+            {
+                Text = string.IsNullOrEmpty(value)
+                    ? "PingLang: (new file)"
+                    : "PingLang: " + System.IO.Path.GetFileName(value);
+            }
+        }
+
         public string Source
         {
             get
@@ -61,22 +72,16 @@ namespace PingLang.Editor
             }
         }
 
-        private void NewButton_Click(object sender, EventArgs e)
-        {
-            _controller.NewRequest();
+        private void Execute<COMMAND>() where COMMAND : EditorCommand, new()
+        {            
+            new COMMAND() { View = this, Script = script }.Execute();
         }
-        private void OpenButton_Click(object sender, EventArgs e)
-        {
-            _controller.OpenRequest();
-        }
-        private void SaveButton_Click(object sender, EventArgs e)
-        {
-            _controller.SaveRequest();
-        }
-        private void RunButton_Click(object sender, EventArgs e)
-        {
-            _controller.RunRequest();
-        }
+
+        private void NewButton_Click(object sender, EventArgs e) { Execute<New>(); }
+        private void OpenButton_Click(object sender, EventArgs e) { Execute<Open>(); }
+        private void SaveButton_Click(object sender, EventArgs e) { Execute<Save>(); }
+        private void RunButton_Click(object sender, EventArgs e) { Execute<Run>(); }
+        private void VisualizeButton_Click(object sender, EventArgs e) { Execute<Visualize>(); }
 
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
@@ -84,16 +89,18 @@ namespace PingLang.Editor
             {
                 switch (e.KeyCode)
                 {
-                    case Keys.N: _controller.NewRequest(); break;
-                    case Keys.O: _controller.OpenRequest(); break;
-                    case Keys.S: _controller.SaveRequest(); break;
-                    case Keys.R: _controller.RunRequest(); break;
+                    case Keys.N: Execute<New>(); break;
+                    case Keys.O: Execute<Open>(); break;
+                    case Keys.S: Execute<Save>(); break;
+                    case Keys.R: Execute<Run>(); break;
                 }
             }
             else if (e.KeyCode == Keys.F5)
             {
-                _controller.RunRequest();
+                Execute<Run>();
             }
         }
+
+        
     }
 }
