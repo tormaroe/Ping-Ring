@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using PingLang.Core.Parsing;
 using System.Text;
 using PingLang.Core.Lexing;
@@ -20,6 +19,7 @@ namespace PingLang.Editor
 
             _dot = new StringBuilder();
             _dot.AppendLine("digraph { ");
+            _dot.AppendLine("node [color=black, style=filled, fillcolor=wheat]");
             AddNode(node);
             _dot.AppendLine("}");
 
@@ -35,11 +35,11 @@ namespace PingLang.Editor
         private string GetDisplayText(AST node)
         {
             string tokenName = Tokens.TokenNames[node.Token.Type];
-            string tokenText = node.Token.Text.Replace('"', '\'');
+            string tokenText = node.Token.Text.Replace('"', '\'');            
             if (string.IsNullOrEmpty(tokenText) || tokenName.Equals(tokenText.ToUpper()))
                 return string.Format("\"{0}: {1}\"", _id.Next(), tokenName);
-            else 
-                return string.Format("\"{0}: {1} ({2})\"", _id.Next(), tokenName, tokenText);
+            else
+                return string.Format("\"{0}: {1} \\\"{2}\\\"\"", _id.Next(), tokenName, tokenText);
         }
 
         private void AddNode(AST node)
@@ -53,16 +53,6 @@ namespace PingLang.Editor
                 
                 AddNode(c);
             });    
-        }
-    }
-
-    public class IntGenerator
-    {
-        private int i;
-
-        public int Next()
-        {
-            return ++i;
         }
     }
 }

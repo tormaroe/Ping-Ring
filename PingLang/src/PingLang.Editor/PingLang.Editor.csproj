@@ -55,6 +55,7 @@
     <Compile Include="CodeCompletionProvider.cs" />
     <Compile Include="DotFileCreator.cs" />
     <Compile Include="EditorCommand.cs" />
+    <Compile Include="IntGenerator.cs" />
     <Compile Include="PingScript.cs" />
     <Compile Include="EditorForm.cs">
       <SubType>Form</SubType>
