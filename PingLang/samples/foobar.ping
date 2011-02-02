@@ -1,0 +1,17 @@
+
+Actor1
+	when pinged
+		print "Ping ping ping ping"
+		wait 1 second
+		ping Actor2
+	end.
+
+Actor2
+	when pinged
+		print "Pong pong pong"
+		wait 2 seconds
+		ping Actor1
+	end.
+	
+# Kick off the loop..
+Main when starting ping Actor1.

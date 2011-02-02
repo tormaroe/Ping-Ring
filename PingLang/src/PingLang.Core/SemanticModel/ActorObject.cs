@@ -19,13 +19,12 @@ namespace PingLang.Core.Actors
             _name = name;
             OnStart = new EventAction<EventState>();
             OnPing = new EventAction<EventState>();
+            OnCounter = new EventAction<EventState>();
         }
-        
-        public EventAction<EventState> OnPing { get; private set; }
-        
-        public EventAction<EventState> OnStart { get; private set; }
 
-        public Predicate<int> WhenCounter { get; set; }
+        public Predicate<int> WhenCounter { get; set; }        
+        public EventAction<EventState> OnPing { get; private set; }        
+        public EventAction<EventState> OnStart { get; private set; }
         public EventAction<EventState> OnCounter { get; private set; }
 
         public void CountEvery(int countInMilliseconds)
@@ -53,10 +52,10 @@ namespace PingLang.Core.Actors
                 while (true)
                 {
                     if (_countInterval > 0 && (tick * _world.Frequenzy) > nextCount)
-                    {
+                    {                        
                         counter++;
-                        
-                        if (WhenCounter(counter))
+
+                        if (WhenCounter != null && WhenCounter(counter))
                             OnCounter.Invoke(new EventState { World = _world });
 
                         nextCount += _countInterval;

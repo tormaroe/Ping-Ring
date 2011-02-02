@@ -45,12 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actors\ActorObject.cs" />
-    <Compile Include="Actors\EventAction.cs" />
-    <Compile Include="Actors\EventState.cs" />
-    <Compile Include="Actors\TreePrinter.cs" />
-    <Compile Include="Actors\World.cs" />
-    <Compile Include="Actors\WorldBuilder.cs" />
+    <Compile Include="SemanticModel\ActorObject.cs" />
+    <Compile Include="SemanticModel\EventAction.cs" />
+    <Compile Include="SemanticModel\EventState.cs" />
+    <Compile Include="SemanticModel\TokenExtensions.cs" />
+    <Compile Include="SemanticModel\TreePrinter.cs" />
+    <Compile Include="SemanticModel\World.cs" />
+    <Compile Include="SemanticModel\WorldBuilder.cs" />
     <Compile Include="Lexing\Lexer.cs" />
     <Compile Include="Lexing\Token.cs" />
     <Compile Include="Lexing\TokenRecognizer.cs" />

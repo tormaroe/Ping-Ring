@@ -12,29 +12,27 @@ namespace PingLang.Core.Lexing
         private readonly IEnumerable<TokenRecognizer> _recognizers;
         private string _inputBuffer;
         
-        public List<Token> Tokens { get; private set; }
-
         public Lexer(IEnumerable<TokenRecognizer> recognizers)
         {
             _recognizers = recognizers;           
         }
 
+        // Will contain the result of the scan
+        public List<Token> Tokens { get; private set; }
+
         public void Tokenize(string input)
         {
             _inputBuffer = input;
-            Tokens = new List<Token>(); 
-            bool parseInProgress = true;
+            Tokens = new List<Token>();
 
-            while (parseInProgress)
-                parseInProgress = MatchToken();
+            while (MatchToken()); // Loop until MatchToken returns false
 
+            // End the token stream with a special End Of File token
             Tokens.Add(new Token(PingLang.Core.Lexing.Tokens.EOF, ""));
         }
 
         private bool MatchToken()
         {
-            bool tokenMatch = false;
-
             foreach (var recognizer in _recognizers)
             {
                 var match = recognizer.Pattern.Match(_inputBuffer);
@@ -43,14 +41,12 @@ namespace PingLang.Core.Lexing
                     if (recognizer.Output)
                         Tokens.Add(new Token(recognizer.TokenType, match.Value));
 
-                    tokenMatch = true;
+                    // Consume the matched token from input
                     _inputBuffer = _inputBuffer.Substring(match.Length);
+                    return true;
                 }
-
-                if (tokenMatch) break;
             }
-
-            return tokenMatch;
+            return false;
         }
     }
 }

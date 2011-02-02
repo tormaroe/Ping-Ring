@@ -57,6 +57,7 @@ namespace PingLang.Core.Actors
             {
                 case Tokens.STARTING: WhenStarting(node); break;
                 case Tokens.PINGED: WhenPinged(node); break;
+                case Tokens.COUNTER: WhenCounter(node); break;
                 default:
                     break;
             }
@@ -65,21 +66,38 @@ namespace PingLang.Core.Actors
         private void WhenStarting(AST node)
         {
             Console.Write(" with starting event ");
-            for (int i = 1; // Skip first, which is event type 
-                i < node.Children.Count; i++)
-            {
-                _currentActor.OnStart.Add(GetAction(node.Children[i]));
-            }
+            AddEventActions(_currentActor.OnStart, node);
         }
 
         private void WhenPinged(AST node)
         {
             Console.Write(" with pinged event ");
+            AddEventActions(_currentActor.OnPing, node);
+        }
+
+        private void AddEventActions(EventAction<EventState> eventAction, AST whenNode)
+        {
             for (int i = 1; // Skip first, which is event type 
-                i < node.Children.Count; i++)
+                i < whenNode.Children.Count; i++)
             {
-                _currentActor.OnPing.Add(GetAction(node.Children[i]));
+                eventAction.Add(GetAction(whenNode.Children[i]));
             }
+        }
+
+        private void WhenCounter(AST node)
+        {
+            Console.Write(" with counter event ");
+
+            if(node.Children[0].Children[0].Token.Type != Tokens.GT)
+                throw new Exception("Only supports 'greater then' counter predicate at the moment!");
+
+            if(node.Children[0].Children[1].Token.Type != Tokens.INT)
+                throw new Exception("Last argument to counter event predicate must be an integer!");
+
+            var intArg = Int32.Parse(node.Children[0].Children[1].Token.Text);
+            _currentActor.WhenCounter = counter => counter > intArg;
+
+            AddEventActions(_currentActor.OnCounter, node);
         }
 
         private Action<EventState> GetAction(AST line)
@@ -87,8 +105,7 @@ namespace PingLang.Core.Actors
             switch (line.Token.Type)
             {
                 case Tokens.PRINT:
-                    var text = line.Children[0].Token.Text;
-                    text = text.Substring(1, text.Length - 2);
+                    var text = line.Children[0].Token.TextWithoutQuotes();
                     return state => Console.WriteLine(text);
                 case Tokens.PING:
                     return state => state.World.Ping(line.Children[0].Token.Text);
@@ -112,6 +129,25 @@ namespace PingLang.Core.Actors
                     throw new Exception("Unrecognized unit type " + text);
             }
 
+        }
+    }
+
+    public class SendAction
+    {
+        public static SendAction Create(AST sendNode)
+        {
+            return new SendAction(
+                Int32.Parse(sendNode.Children[1].Token.Text),
+                sendNode.Children[0].Token.Text);
+        }
+        
+        private readonly int _port;
+        private readonly string _message;
+        
+        public SendAction(int port, string message)
+        {
+            _message = message;
+            _port = port;
         }
     }
 }
