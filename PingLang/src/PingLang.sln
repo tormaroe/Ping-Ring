@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PingLang.Editor", "PingLang
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PingLang.Interpreter", "PingLang.Interpreter\PingLang.Interpreter.csproj", "{D0BC81E8-DADA-43D3-A3D3-00EC0B43C5DC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{A3D11F1A-1864-4260-AD5C-170E49BDBD66}"
+	ProjectSection(SolutionItems) = preProject
+		Grammar.txt = Grammar.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

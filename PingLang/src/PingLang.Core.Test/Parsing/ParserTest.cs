@@ -8,13 +8,10 @@ using PingLang.Core.Lexing;
 
 namespace PingLang.Core.Test.Parsing
 {
-
     [TestFixture]
     public class ParserTest
     {
-        // TEst extra line breaks in block, between blocks, at end etc.
-        // Test "second" literal
-        // Logic to convert argument based on unit literal - should not be in parser anyway
+        // TODO: TEst extra line breaks in block, between blocks, at end etc.
 
         [Test]
         public void Tiny()
@@ -42,7 +39,7 @@ namespace PingLang.Core.Test.Parsing
                     end
                     when counter > 10
                         wait 1 second
-                        print ""Foo""
+                        print ""Foo"" 12345
                     end
                     when message print ""Foo""."
                 );
@@ -59,7 +56,7 @@ namespace PingLang.Core.Test.Parsing
                             count every 2 months."
                     );
             },
-            ex => ex.Message.Equals("Unexpected unit literal months"));
+            ex => ex.Message.Equals("Unexpected unit literal <ID,\"months\">"));
         }
 
         [Test]
@@ -77,20 +74,6 @@ namespace PingLang.Core.Test.Parsing
             },
             ex => ex.Message.Equals("Unexpected actor body <ID,\"do\">"));
         }
-        
-        [Test]
-        public void Test_unexpected_print_argument()
-        {
-            typeof(Exception).ShouldBeThrownBy(() =>
-            {
-                var parser = new Parser(new Lexer(Tokens.All));
-                parser.ConstructTree(
-                    @"Pinger
-                            when message print 23 ""Foo"" message foobar."
-                    );
-            },
-            ex => ex.Message.Equals("Unexpected print argument <ID,\"foobar\">"));
-        }
 
         [Test]
         public void Test_unexpected_event()
@@ -104,7 +87,7 @@ namespace PingLang.Core.Test.Parsing
                             when earthquake print ""Foo""."
                     );
             },
-            ex => ex.Message.Equals("Unexpected event <ID,\"earthquake\">"));
+            ex => ex.Message.Equals("Unexpected event spec <ID,\"earthquake\">"));
         }
 
         [Test]
@@ -119,7 +102,7 @@ namespace PingLang.Core.Test.Parsing
                             when message poop ""Foo""."
                         );
                 },
-                ex => ex.Message.Equals("Unexpected event body <ID,\"poop\">"));
+                ex => ex.Message.Equals("Unexpected action <ID,\"poop\">"));
         }
     }
 }

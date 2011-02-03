@@ -8,268 +8,210 @@ namespace PingLang.Core.Parsing
 {
     public class Parser : BaseParser
     {        
-        private static string[] _unit_literals 
-            = new [] {"second", "seconds"};
-        
         public Parser(Lexer lexer) : base(lexer) { }
-                                                                             
-        private void MatchUnitId()
-        {
-            if (_unit_literals.Contains(LT(1).Text))
-                Match(Tokens.ID);
-            else
-                throw new Exception("Unexpected unit literal " + LT(1).Text);
-        }
-
-        private AST _currentNode;
 
         /// <summary>
-        /// program : ACTOR_ID* ; // match zero or more actors
+        /// program      : actor* T? EOF                         ;
         /// </summary>
         protected override void Program()
         {
             AST = new AST(new Token(Tokens.PROGRAM, ""));
             _currentNode = AST;
-            do {
-               Actor();
-            } while(LT(1).Type != Tokens.EOF);
+
+            UntilToken(Tokens.EOF, () =>
+            {
+                Actor();
+                Consume_T();
+            });
         }
 
-        private void AddCurrentTokenAndSetAsCurrentNode()
-        {
-            var newNode = new AST(LT(1));
-            _currentNode.Children.Add(newNode);
-            _currentNode = newNode;
-        }
         /// <summary>
-        /// ACTOR : T* ID BODY* . ; // ACTOR_ID postfixed ':'
+        /// actor        : T? ID actorBody                       ;
         /// </summary>
         private void Actor()
         {
-            ConsumeLeadingTerminators();
-
-            AddCurrentTokenAndSetAsCurrentNode();
-            Match(Tokens.ID);
-            
-            while (LT(1).Type != Tokens.ACTOR_END)
-                Body();
-            
-            Match(Tokens.ACTOR_END);
-            _currentNode = AST;
+            Consume_T();
+            if (TokenIs(Tokens.ID))
+            {
+                PreserveCurrentNode(() =>
+                {
+                    AddCurrentTokenAndSetAsCurrentNode();
+                    ActorBody();
+                });
+            }
         }
 
         /// <summary>
-        /// BODY : T* LISTEN|COUNT|WHEN_WITH_BODY ;
+        /// actorBody    : T? (listenStmt|countStmt|whenBlock)* . ; 
         /// </summary>
-        private void Body()
+        private void ActorBody()
         {
-            ConsumeLeadingTerminators();
-            
-            PreserveCurrentNodeAfterOperation(() =>
+            Consume_T();
+            DoUntilToken(Tokens.ACTOR_END, () =>
             {
-                AddCurrentTokenAndSetAsCurrentNode();
-                switch (LT(1).Type)
+                PreserveCurrentNode(() =>
                 {
-                    case Tokens.LISTEN: Listen(); break;
-                    case Tokens.COUNT: Count(); break;
-                    case Tokens.WHEN: When(); break;
+                    switch (CurrentTokenType)
+                    {
+                        case Tokens.LISTEN: ListenStmt(); break;
+                        case Tokens.COUNT: CountStmt(); break;
+                        case Tokens.WHEN: WhenBlock(); break;
+                        default: ThrowParseException("Unexpected actor body"); break;
+                    }
+                });
+            });
+        }
+
+        /// <summary>
+        /// listenStmt   : LISTEN INT T?                         ;
+        /// </summary>
+        private void ListenStmt()
+        {
+            AddCurrentTokenAndSetAsCurrentNode(Tokens.LISTEN);
+            AddCurrentToken(Tokens.INT);
+            Consume_T();
+        }
+
+        /// <summary>
+        /// countStmt    : COUNT INT unit T?                     ;
+        /// </summary>
+        private void CountStmt()
+        {
+            AddCurrentTokenAndSetAsCurrentNode(Tokens.COUNT);
+            AddCurrentToken(Tokens.INT);
+            Unit();
+            Consume_T();
+        }
+
+        /// <summary>
+        /// unit         : 'second'|'seconds'                    ;
+        /// </summary>
+        private void Unit()
+        {
+            if (CurrentTextIsOneOf("second", "seconds"))
+                AddCurrentToken(Tokens.ID);
+            else
+                ThrowParseException("Unexpected unit literal");
+        }
+
+        /// <summary>
+        /// whenBlock    : WHEN eventSpec eventBody              ;
+        /// </summary>
+        private void WhenBlock()
+        {
+            AddCurrentTokenAndSetAsCurrentNode(Tokens.WHEN);
+            EventSpec();
+            EventBody();
+        }
+
+        /// <summary>
+        /// eventSpec    : STARTING
+        ///              | ERROR
+        ///              | PINGED
+        ///              | MESSAGE
+        ///              | COUNTER GT INT                        ;
+        /// </summary>
+        private void EventSpec()
+        {
+            switch (CurrentTokenType)
+            {
+                case Tokens.STARTING: AddCurrentToken(); break;
+                case Tokens.ERROR: AddCurrentToken(); break;
+                case Tokens.PINGED: AddCurrentToken(); break;
+                case Tokens.MESSAGE: AddCurrentToken(); break;
+                case Tokens.COUNTER:
+                    PreserveCurrentNode(() =>
+                    {
+                        AddCurrentTokenAndSetAsCurrentNode();
+                        AddCurrentToken(Tokens.GT);
+                        AddCurrentToken(Tokens.INT);
+                    });
+                    break;
+                default:
+                    ThrowParseException("Unexpected event spec");
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// eventBody    : action T*                               
+        ///              | T+ (action T)+ END T+                 ;
+        /// </summary>
+        private void EventBody()
+        {
+            if (TokenIs(Tokens.T))
+            {
+                Consume_T();
+                DoUntilToken(Tokens.END, () =>
+                {
+                    Action();
+                    Match(Tokens.T);
+                });
+            }
+            else
+            {
+                Action();
+            }
+            Consume_T();
+        }
+
+        /// <summary>
+        /// action       : PRINT printArgs
+        ///              | PING INT
+        ///              | RESET
+        ///              | WAIT INT unit
+        ///              | SEND STRING TO_PORT INT               ;
+        /// </summary>
+        private void Action()
+        {
+            PreserveCurrentNode(() =>
+            {
+                switch (CurrentTokenType)
+                {
+                    case Tokens.PRINT:
+                        AddCurrentTokenAndSetAsCurrentNode();
+                        PrintArgs();
+                        break;
+                    case Tokens.PING:
+                        AddCurrentTokenAndSetAsCurrentNode();
+                        AddCurrentToken(Tokens.ID);
+                        break;
+                    case Tokens.RESET:
+                        AddCurrentToken();
+                        break;
+                    case Tokens.WAIT:
+                        AddCurrentTokenAndSetAsCurrentNode();
+                        AddCurrentToken(Tokens.INT);
+                        Unit();
+                        break;
+                    case Tokens.SEND:
+                        AddCurrentTokenAndSetAsCurrentNode();
+                        AddCurrentToken(Tokens.STRING);
+                        Match(Tokens.TO_PORT);
+                        AddCurrentToken(Tokens.INT);
+                        break;
                     default:
-                        throw new Exception("Unexpected actor body " + LT(1));
+                        ThrowParseException("Unexpected action");
+                        break;
                 }
             });
         }
 
         /// <summary>
-        /// LISTEN : 'listen on' INT ;
+        /// printArgs    : (INT|STRING|MESSAGE)*                 ;
         /// </summary>
-        private void Listen()
+        private void PrintArgs()
         {
-            Match(Tokens.LISTEN);
-            _currentNode.Children.Add(new AST(LT(1)));
-            Match(Tokens.INT);
-        }
-
-        /// <summary
-        /// COUNT : 'count every' INT 'second' ;
-        /// </summary>
-        private void Count()
-        {
-            Match(Tokens.COUNT);
-            _currentNode.Children.Add(new AST(LT(1)));
-            Match(Tokens.INT);
-            _currentNode.Children.Add(new AST(LT(1)));
-            MatchUnitId();
-        }
-
-        /// <summary>
-        /// WHEN_WITH_BODY : WHEN EVENT EVENT_BODY ;
-        /// </summary>
-        private void When()
-        {
-            Match(Tokens.WHEN);
-
-            var eventSpec = new AST(LT(1));
-            _currentNode.Children.Add(eventSpec);
-
-            switch (LT(1).Type)
+            while (true)
             {
-                case Tokens.ERROR:
-                    Match(Tokens.ERROR);
-                    Event_body();
-                    break;
-                case Tokens.PINGED:                    
-                    Match(Tokens.PINGED);
-                    Event_body();
-                    break;
-                case Tokens.MESSAGE:
-                    Match(Tokens.MESSAGE);
-                    Event_body();
-                    break;
-                case Tokens.COUNTER:
-                    Match(Tokens.COUNTER);
-                    eventSpec.Children.Add(new AST(LT(1)));
-                    Match(Tokens.GT);
-                    eventSpec.Children.Add(new AST(LT(1)));
-                    Match(Tokens.INT);
-                    Event_body();
-                    break;
-                case Tokens.STARTING:
-                    Match(Tokens.STARTING);
-                    Event_body();
-                    break;
-                default:
-                    throw new Exception("Unexpected event " + LT(1));
-            }
-
-        }
-
-        /// <summary>
-        /// EVENT_BODY : LINE .
-        ///            | LINE T
-        ///            | BLOCK
-        ///            ;
-        /// </summary>
-        private void Event_body()
-        {
-            if (LT(1).Type == Tokens.T)
-                Event_body_Block();
-            else
-                Event_body_Line();            
-        }
-
-        /// <summary>
-        /// BLOCK : T+ (LINE T)+ END ;
-        /// </summary>
-        private void Event_body_Block()
-        {
-            ConsumeLeadingTerminators();
-
-            while (LT(1).Type != Tokens.END)
-            {
-                Event_body_Line();
-                Match(Tokens.T);
-            }
-
-            Match(Tokens.END);
-        }
-
-        /// <summary>
-        /// LINE : PRINT ARG+
-        ///      | PING INT
-        ///      | RESET
-        ///      | WAIT INT ID
-        ///      | SEND STRING TO_PORT INT
-        ///      ;
-        /// </summary>
-        private void Event_body_Line()
-        {
-            PreserveCurrentNodeAfterOperation(() =>
-            {
-                AddCurrentTokenAndSetAsCurrentNode();
-                switch (LT(1).Type)
+                switch (CurrentTokenType)
                 {
-                    case Tokens.PRINT: Print(); break;
-                    case Tokens.PING: Ping(); break;
-                    case Tokens.RESET: Reset(); break;
-                    case Tokens.WAIT: Wait(); break;
-                    case Tokens.SEND: Send(); break;
-                    default:
-                        throw new Exception("Unexpected event body " + LT(1));
-                }
-            });            
-        }
-
-        private void PreserveCurrentNodeAfterOperation(Action a)
-        {
-            var tempNode = _currentNode;
-            a.Invoke();
-            _currentNode = tempNode;
-        }
-
-        /// <summary>
-        /// PRINT : (INT|STRING|MESSAGE)* ;
-        /// </summary>
-        private void Print()
-        {
-            Match(Tokens.PRINT);
-            do
-            {
-                _currentNode.Children.Add(new AST(LT(1)));
-                switch (LT(1).Type)
-                {
-                    case Tokens.STRING:
-                        Match(Tokens.STRING);
-                        break;
-                    case Tokens.MESSAGE:
-                        Match(Tokens.MESSAGE);
-                        break;
-                    case Tokens.INT:
-                        Match(Tokens.INT);
-                        break;
-                    default:
-                        throw new Exception("Unexpected print argument " + LT(1));
-                }
-            } while (LT(1).Type != Tokens.T && LT(1).Type != Tokens.ACTOR_END);
-        }
-
-        /// <summary>
-        /// PING : 'ping' ID ;
-        /// </summary>
-        private void Ping()
-        {
-            Match(Tokens.PING);
-            _currentNode.Children.Add(new AST(LT(1)));
-            Match(Tokens.ID);
-        }
-
-        private void Reset()
-        {
-            Match(Tokens.RESET);
-        }
-
-        /// <summary>
-        /// WAIT : 'wait' INT ID ;
-        /// </summary>
-        private void Wait()
-        {
-            Match(Tokens.WAIT);
-            _currentNode.Children.Add(new AST(LT(1)));
-            Match(Tokens.INT);
-            _currentNode.Children.Add(new AST(LT(1)));
-            Match(Tokens.ID);
-        }
-
-        /// <summary>
-        /// SEND STRING TO_PORT INT
-        /// </summary>
-        private void Send()
-        {
-            Match(Tokens.SEND);
-            _currentNode.Children.Add(new AST(LT(1)));
-            Match(Tokens.STRING);
-            Match(Tokens.TO_PORT);
-            _currentNode.Children.Add(new AST(LT(1)));
-            Match(Tokens.INT);
+                    case Tokens.INT: AddCurrentToken(); break;
+                    case Tokens.STRING: AddCurrentToken(); break;
+                    case Tokens.MESSAGE: AddCurrentToken(); break;
+                    default: return;
+                };
+            }
         }
     }
 }

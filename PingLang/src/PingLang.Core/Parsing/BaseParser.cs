@@ -13,6 +13,7 @@ namespace PingLang.Core.Parsing
 
         int _tokenIndex;
         private readonly Lexer _input;
+        protected AST _currentNode;
         public AST AST {get; protected set;}
 
         public BaseParser(Lexer lexer)
@@ -35,26 +36,103 @@ namespace PingLang.Core.Parsing
             _tokenIndex++;
         }
 
-        protected void ConsumeLeadingTerminators()
+        protected void Consume_T()
         {
-            while (LT(1).Type == Tokens.T) Consume();
+            while (CurrentToken.Type == Tokens.T) Consume();
         }
 
-        protected Token LT(int i)
+        protected Token CurrentToken
         {
-            return _tokens[i + _tokenIndex - 1];
+            get
+            {
+                return _tokens[_tokenIndex];
+            }
+        }
+
+        protected bool CurrentTextIsOneOf(params string[] args)
+        {
+            return args.Contains(CurrentToken.Text);
+        }
+        
+        protected bool TokenIs(int tokenType)
+        {
+            return CurrentToken.Type == tokenType;
+        }
+
+        protected int CurrentTokenType
+        {
+            get
+            {
+                return CurrentToken.Type;
+            }
         }
 
         protected void Match(int x)
         {
-            if (LT(1).Type == x)
+            if (CurrentToken.Type == x)
                 Consume();
             else
                 throw new Exception(String.Format(
                     "expecting {0}; found {1}",
                     Tokens.TokenNames[x],
-                    LT(1)));
+                    CurrentToken));
         }
 
+        protected void ThrowParseException(string message)
+        {
+            throw new Exception(String.Format("{0} {1}", message, CurrentToken));
+        }
+
+        protected void AddCurrentToken()
+        {
+            AddCurrentToken(CurrentTokenType);
+        }
+
+        protected void AddCurrentToken(int tokenType)
+        {
+            var newNode = new AST(CurrentToken);
+            _currentNode.Children.Add(newNode);            
+            Match(tokenType);
+        }
+
+        protected void AddCurrentTokenAndSetAsCurrentNode()
+        {
+            AddCurrentTokenAndSetAsCurrentNode(CurrentTokenType);
+        }
+
+        protected void AddCurrentTokenAndSetAsCurrentNode(int tokenType)
+        {
+            var newNode = new AST(CurrentToken);
+            _currentNode.Children.Add(newNode);
+            _currentNode = newNode;
+            Match(tokenType);
+        }
+
+        protected void PreserveCurrentNode(Action a)
+        {
+            var tempNode = _currentNode;
+            a.Invoke();
+            _currentNode = tempNode;
+        }
+
+        /// <summary>
+        /// Used to eat one or more tokens (+) until specified token type reached
+        /// </summary>
+        protected void DoUntilToken(int tokenType, Action block)
+        {
+            block();
+            UntilToken(tokenType, block);
+        }
+
+        /// <summary>
+        /// Used to eat zero or more tokens (*) until specified token type reached
+        /// </summary>
+        protected void UntilToken(int tokenType, Action block)
+        {
+            while (CurrentToken.Type != tokenType)
+                block();
+
+            Consume();
+        }
     }
 }
