@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PingLang.Interpreter", "Pin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{A3D11F1A-1864-4260-AD5C-170E49BDBD66}"
 	ProjectSection(SolutionItems) = preProject
-		Grammar.txt = Grammar.txt
+		Grammar.g = Grammar.g
 	EndProjectSection
 EndProject
 Global
