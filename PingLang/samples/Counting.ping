@@ -1,6 +1,6 @@
 
 Main
   count every 1 second
-  when counter > 1
+  when counter > 0
   	print "foo"
   end.

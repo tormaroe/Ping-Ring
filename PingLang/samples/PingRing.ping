@@ -30,4 +30,4 @@ PingWatcher
 
 # Include line below if this script should
 # be used to start the ping ring ...
-// Main when starting ping PingSender.
+Main when starting ping PingSender.

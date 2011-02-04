@@ -41,6 +41,12 @@ namespace PingLang.Core.Parsing
             while (CurrentToken.Type == Tokens.T) Consume();
         }
 
+        protected void SetRoot(Token root)
+        {
+            AST = new AST(root);
+            _currentNode = AST;
+        }
+
         protected Token CurrentToken
         {
             get
@@ -49,22 +55,19 @@ namespace PingLang.Core.Parsing
             }
         }
 
-        protected bool CurrentTextIsOneOf(params string[] args)
+        protected bool IsCurrentOneOf(params string[] args)
         {
             return args.Contains(CurrentToken.Text);
         }
-        
+
+        protected bool IsCurrentOneOf(params int[] args)
+        {
+            return args.Contains(CurrentToken.Type);
+        }
+
         protected bool TokenIs(int tokenType)
         {
             return CurrentToken.Type == tokenType;
-        }
-
-        protected int CurrentTokenType
-        {
-            get
-            {
-                return CurrentToken.Type;
-            }
         }
 
         protected void Match(int x)
@@ -85,7 +88,7 @@ namespace PingLang.Core.Parsing
 
         protected void AddCurrentToken()
         {
-            AddCurrentToken(CurrentTokenType);
+            AddCurrentToken(CurrentToken.Type);
         }
 
         protected void AddCurrentToken(int tokenType)
@@ -97,7 +100,7 @@ namespace PingLang.Core.Parsing
 
         protected void AddCurrentTokenAndSetAsCurrentNode()
         {
-            AddCurrentTokenAndSetAsCurrentNode(CurrentTokenType);
+            AddCurrentTokenAndSetAsCurrentNode(CurrentToken.Type);
         }
 
         protected void AddCurrentTokenAndSetAsCurrentNode(int tokenType)

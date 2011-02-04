@@ -48,6 +48,8 @@
     <Compile Include="SemanticModel\ActorObject.cs" />
     <Compile Include="SemanticModel\EventAction.cs" />
     <Compile Include="SemanticModel\EventState.cs" />
+    <Compile Include="SemanticModel\PrintAction.cs" />
+    <Compile Include="SemanticModel\SendAction.cs" />
     <Compile Include="SemanticModel\TokenExtensions.cs" />
     <Compile Include="SemanticModel\TreePrinter.cs" />
     <Compile Include="SemanticModel\World.cs" />

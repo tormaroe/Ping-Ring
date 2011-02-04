@@ -11,6 +11,7 @@ namespace PingLang.Core.Actors
         private Queue<EventState> _mailbox = new Queue<EventState>();
         private readonly string _name;
         private readonly World _world;
+        private int _counter;
         private int _countInterval;
         
         internal ActorObject(string name, World world)
@@ -27,6 +28,14 @@ namespace PingLang.Core.Actors
         public EventAction<EventState> OnStart { get; private set; }
         public EventAction<EventState> OnCounter { get; private set; }
 
+        public int Counter
+        {
+            get
+            {
+                return _counter;
+            }
+        }
+
         public void CountEvery(int countInMilliseconds)
         {
             _countInterval = countInMilliseconds;            
@@ -34,7 +43,13 @@ namespace PingLang.Core.Actors
 
         internal void Ping(EventState p)
         {
+            p.Self = this;
             _mailbox.Enqueue(p);
+        }
+
+        public void ResetCounter()
+        {
+            _counter = 0;
         }
 
         internal void Start()
@@ -44,19 +59,19 @@ namespace PingLang.Core.Actors
                 Console.WriteLine(_name + " starting..");
                 
                 if (OnStart != null)
-                    OnStart.Invoke(new EventState { World = _world });
+                    OnStart.Invoke(new EventState { World = _world, Self = this });
 
                 int tick = 0;
-                int counter = 0;
+                _counter = 0;
                 int nextCount = _countInterval;
                 while (true)
                 {
                     if (_countInterval > 0 && (tick * _world.Frequenzy) > nextCount)
                     {                        
-                        counter++;
+                        _counter++;
 
-                        if (WhenCounter != null && WhenCounter(counter))
-                            OnCounter.Invoke(new EventState { World = _world });
+                        if (WhenCounter != null && WhenCounter(_counter))
+                            OnCounter.Invoke(new EventState { World = _world, Self = this });
 
                         nextCount += _countInterval;
                     }

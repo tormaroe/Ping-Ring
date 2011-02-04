@@ -9,5 +9,6 @@ namespace PingLang.Core.Actors
     public class EventState 
     {
         public World World;
+        public ActorObject Self;
     }
 }

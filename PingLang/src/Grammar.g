@@ -24,7 +24,7 @@ action       : PRINT printArgs
              | WAIT INT unit
              | SEND STRING TO_PORT INT               ;
 
-printArgs    : (INT|STRING|MESSAGE)*                 ;
+printArgs    : (INT|STRING|MESSAGE|COUNTER)*         ;
 
 // ---- Terminals -----------------------------------
 

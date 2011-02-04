@@ -105,13 +105,18 @@ namespace PingLang.Core.Actors
             switch (line.Token.Type)
             {
                 case Tokens.PRINT:
-                    var text = line.Children[0].Token.TextWithoutQuotes();
-                    return state => Console.WriteLine(text);
+                    var print = PrintAction.Create(line);
+                    return state => print.Execute(state);
                 case Tokens.PING:
                     return state => state.World.Ping(line.Children[0].Token.Text);
                 case Tokens.WAIT:
                     int sleepInMilliseconds = Int32.Parse(line.Children[0].Token.Text) * Unit(line.Children[1].Token.Text);
                     return state => Thread.Sleep(sleepInMilliseconds);
+                case Tokens.SEND:
+                    var send = SendAction.Create(line);
+                    return state => send.Execute();
+                case Tokens.RESET:
+                    return state => state.Self.ResetCounter();
                 default:
                     throw new Exception("Unrecognized action " + line.Token);
             }            
@@ -129,25 +134,6 @@ namespace PingLang.Core.Actors
                     throw new Exception("Unrecognized unit type " + text);
             }
 
-        }
-    }
-
-    public class SendAction
-    {
-        public static SendAction Create(AST sendNode)
-        {
-            return new SendAction(
-                Int32.Parse(sendNode.Children[1].Token.Text),
-                sendNode.Children[0].Token.Text);
-        }
-        
-        private readonly int _port;
-        private readonly string _message;
-        
-        public SendAction(int port, string message)
-        {
-            _message = message;
-            _port = port;
         }
     }
 }

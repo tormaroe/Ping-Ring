@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using PingLang.Core.Lexing;
 
 namespace PingLang.Core.Parsing
@@ -15,9 +13,8 @@ namespace PingLang.Core.Parsing
         /// </summary>
         protected override void Program()
         {
-            AST = new AST(new Token(Tokens.PROGRAM, ""));
-            _currentNode = AST;
-
+            SetRoot(new Token(Tokens.PROGRAM, ""));
+            
             UntilToken(Tokens.EOF, () =>
             {
                 Actor();
@@ -51,7 +48,7 @@ namespace PingLang.Core.Parsing
             {
                 PreserveCurrentNode(() =>
                 {
-                    switch (CurrentTokenType)
+                    switch (CurrentToken.Type)
                     {
                         case Tokens.LISTEN: ListenStmt(); break;
                         case Tokens.COUNT: CountStmt(); break;
@@ -88,7 +85,7 @@ namespace PingLang.Core.Parsing
         /// </summary>
         private void Unit()
         {
-            if (CurrentTextIsOneOf("second", "seconds"))
+            if (IsCurrentOneOf("second", "seconds"))
                 AddCurrentToken(Tokens.ID);
             else
                 ThrowParseException("Unexpected unit literal");
@@ -113,7 +110,7 @@ namespace PingLang.Core.Parsing
         /// </summary>
         private void EventSpec()
         {
-            switch (CurrentTokenType)
+            switch (CurrentToken.Type)
             {
                 case Tokens.STARTING: AddCurrentToken(); break;
                 case Tokens.ERROR: AddCurrentToken(); break;
@@ -166,7 +163,7 @@ namespace PingLang.Core.Parsing
         {
             PreserveCurrentNode(() =>
             {
-                switch (CurrentTokenType)
+                switch (CurrentToken.Type)
                 {
                     case Tokens.PRINT:
                         AddCurrentTokenAndSetAsCurrentNode();
@@ -204,13 +201,15 @@ namespace PingLang.Core.Parsing
         {
             while (true)
             {
-                switch (CurrentTokenType)
-                {
-                    case Tokens.INT: AddCurrentToken(); break;
-                    case Tokens.STRING: AddCurrentToken(); break;
-                    case Tokens.MESSAGE: AddCurrentToken(); break;
-                    default: return;
-                };
+                if(IsCurrentOneOf(
+                    Tokens.INT, 
+                    Tokens.STRING, 
+                    Tokens.MESSAGE, 
+                    Tokens.COUNTER))
+
+                    AddCurrentToken();
+                else
+                    break;
             }
         }
     }
